@@ -82,6 +82,16 @@ def get_peptide(x, token_type_id=2):
   peptide_idx = np.where(peptide_positions)[0]
   return peptide, peptide_idx
 
+def get_regions(x, token_type_ids=[2]):
+  peptide_positions = (x[0] != 2) & (x[0] != 3)
+  ok_token_ids = np.array([False]*len(x[0]))
+  for token_type_id in token_type_ids:
+    ok_token_ids = np.array(ok_token_ids) | (np.array(x[1] == token_type_id))
+  peptide_positions = peptide_positions & ok_token_ids
+  peptide = x[0][peptide_positions]
+  peptide_idx = np.where(peptide_positions)[0]
+  return peptide, peptide_idx
+
 def insert_peptide(x, peptide, peptide_idx):
   x[0][peptide_idx] = peptide
   return x

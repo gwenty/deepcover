@@ -7,6 +7,7 @@ from datetime import datetime
 from mask import *
 from torch import sigmoid, tensor
 import os
+import platform
 
 def to_explain(eobj):
   print ('\n[To explain: SFL (Software Fault Localization) is used]')
@@ -117,7 +118,8 @@ def to_explain(eobj):
       diii=dii+'/{0}'.format(measure)
       print ('  #### [Saving: {0}]'.format(diii))
       os.system('mkdir -p {0}'.format(diii))
-      os.makedirs(diii)
+      if not os.path.isdir(diii):
+        os.makedirs(diii)
       np.savetxt(diii+'/ranking.txt', ranking_i, fmt='%s')
       save_spectrum(spectrum, diii+'/spectrum.txt')
 

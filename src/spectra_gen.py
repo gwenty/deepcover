@@ -9,7 +9,6 @@ from itertools import combinations
 def spectra_sym_gen(eobj, x, y, adv_value=1, testgen_factor=.2, testgen_size=0, substitution_matrix=None):
   
   v_type=type(adv_value)
-  model=eobj.model
   failing=[]
   passing=[]
 
@@ -204,14 +203,15 @@ def all_combos(x, n_to_mutate):
   return to_mask
 
 # Use this if not dynamic size
-def spectra_gen_immunobert(eobj, x, y, substitution_matrix, mask_sizes=[2,3], testgen_size=-1):
+def spectra_gen_immunobert(eobj, x, y, substitution_matrix, mask_sizes=[1,2,3], regions_to_mask=[2, 0], testgen_size=-1):
+# Regions to mask: The token type ids to mutate. 2=peptide. 1,3=flanks. 0=mhc prot.
 
   passing = []
   failing = []
   inputs = []
 
   # Mutate only peptide
-  peptide, peptide_idx = get_peptide(x)
+  peptide, peptide_idx = get_regions(x, token_type_ids=regions_to_mask)
 
   for n_to_mutate in mask_sizes:
 
@@ -219,7 +219,7 @@ def spectra_gen_immunobert(eobj, x, y, substitution_matrix, mask_sizes=[2,3], te
     idx_to_mask = all_combos(peptide, n_to_mutate)
     print(idx_to_mask)
     # Choose testgen_size of these
-    if testgen_size != -1:
+    if testgen_size != -1 and len(idx_to_mask)>testgen_size:
       idx_to_mask = choices(idx_to_mask, k=testgen_size)
 
     # Mutate those peptide locations
