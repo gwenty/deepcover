@@ -183,8 +183,6 @@ def save_an_image(im, title, di='./'):
   save_img((di+title+'.jpg'), im)
 
 def save_spectrum(spectrum, filename):
-  print(spectrum.shape)
-  print(len(spectrum.shape)==3)
   if len(spectrum.shape) == 3:
     with open(filename,'w') as f:
       for a in spectrum:
@@ -201,7 +199,6 @@ def immunobert_spectrum_plot_dict(example, spectrum, filename):
   cflank_ax = fig.add_subplot(3,3,3)
   mhc_ax = fig.add_subplot(3,1,2)
 
-  print(spectrum)
   ymin = 0
   ymax = np.max(spectrum) * 1.1
 

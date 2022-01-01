@@ -63,6 +63,8 @@ def main():
   parser.add_argument("--wsol", dest='wsol_file', help="weakly supervised object localization", metavar="FILE")
   parser.add_argument("--occlusion", dest='occlusion_file', help="to load the occluded images", metavar="FILE")
   parser.add_argument("--path_to_immunobert", dest='immunobert_path', help="Path to ImmunoBERT folder", metavar="DIR")
+  parser.add_argument("--batch_size", dest='batch_size', help="Batch size", metavar="INT", default=1)
+  parser.add_argument("--batch_number", dest='batch_number', help="Batch number", metavar="INT", default=0)
 
   args=parser.parse_args()
 
@@ -114,9 +116,7 @@ def main():
   if args.inputs!='-1':
     if immunobert:
       xs = np.load(args.inputs, allow_pickle=True)
-      xs = [xs[40]] #TODO
       fnames = np.arange(0,len(xs))
-      fnames = [40]
     else:
       for path, subdirs, files in os.walk(args.inputs):
         for name in files:
@@ -134,6 +134,12 @@ def main():
       xs = xs.reshape(xs.shape[0], img_rows, img_cols, img_channels)
   else:
     raise Exception ('What do you want me to do?')
+
+  # Keep only the batch
+  batch_start = int(args.batch_number)*int(args.batch_size)
+  batch_end = batch_start + int(args.batch_size)
+  print('Batch start: {} Batch end: {}'.format(batch_start, batch_end))
+  xs = xs[batch_start:batch_end]
   
   print ('\n[Total data loaded: {0}]'.format(len(xs)))
 
@@ -165,6 +171,8 @@ def main():
       measures.append(args.measure)
   else: measures = args.measures
   eobj.measures=measures
+  #eobj.batch_number=int(args.batch_number)
+  #eobj.batch_size=int(args.batch_size)
 
   if not args.wsol_file is None:
       print (args.wsol_file)

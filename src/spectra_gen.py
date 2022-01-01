@@ -217,7 +217,6 @@ def spectra_gen_immunobert(eobj, x, y, substitution_matrix, mask_sizes=[1,2,3], 
 
     # Get all index combinations of the specified sizes
     idx_to_mask = all_combos(peptide, n_to_mutate)
-    print(idx_to_mask)
     # Choose testgen_size of these
     if testgen_size != -1 and len(idx_to_mask)>testgen_size:
       idx_to_mask = choices(idx_to_mask, k=testgen_size)
