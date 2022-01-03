@@ -52,7 +52,8 @@ def to_explain(eobj):
 
     # eobj.inputs=[example]
 
-    sub_mat = substitution_matrix('blosum.txt')
+    blosum_path = os.path.dirname(os.path.realpath(__file__)) + os.sep + '..' + os.sep + 'blosum.txt'
+    sub_mat = substitution_matrix(blosum_path)
 
   for i in range(0, len(eobj.inputs)):
     x=eobj.inputs[i]
