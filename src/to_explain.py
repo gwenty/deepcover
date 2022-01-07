@@ -111,6 +111,11 @@ def to_explain(eobj):
     dii=di+'/{0}'.format(str(datetime.now()).replace(' ', '-'))
     dii=dii.replace(':', '-')
     os.system('mkdir -p {0}'.format(dii))
+    # Save the instance so we know which part is peptide, hla etc.
+    if not os.path.isdir(dii):
+        os.makedirs(dii)
+    np.save(dii+'/instance', x)
+
     for measure in eobj.measures:
       print ('  #### [Measuring: {0} is used]'.format(measure))
       ranking_i, spectrum=to_rank(selement, measure)
@@ -123,10 +128,10 @@ def to_explain(eobj):
       np.savetxt(diii+'/ranking.txt', ranking_i, fmt='%s')
       save_spectrum(spectrum, diii+'/spectrum.txt')
 
-      if eobj.immunobert:
-        immunobert_spectrum_plot(selement.x, spectrum, diii+'/'+measure+'.png')
+      #if eobj.immunobert:
+      #  immunobert_spectrum_plot(selement.x, spectrum, diii+'/'+measure+'.png')
 
-      else:
+      if not eobj.immunobert:
 
         # to plot the heatmap
         spectrum = np.array((spectrum/spectrum.max())*255)
