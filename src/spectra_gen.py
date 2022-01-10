@@ -153,7 +153,7 @@ def substitute_aa(region, sub_mat):
   #print(region)
   for aa in region:
     # Find a substitution for an AA
-    max_sub_value = blosum[aa].drop(aa).max() # Most similar
+    max_sub_value = blosum[aa].drop(aa).min() # Least similar NOTE!!!!!!!!!!!!!!!!!!!!!!
     # If there are mutliple maxs, randomly pick one to sub with
     sub_aa = choice(blosum[aa][blosum[aa]==max_sub_value].index.values)
     new_region.append(sub_aa)
