@@ -117,7 +117,6 @@ def main():
   if args.inputs!='-1':
     if immunobert:
       xs = np.load(args.inputs, allow_pickle=True)
-      fnames = np.arange(0,len(xs))
     else:
       for path, subdirs, files in os.walk(args.inputs):
         for name in files:
@@ -141,6 +140,8 @@ def main():
   batch_end = batch_start + int(args.batch_size)
   print('Batch start: {} Batch end: {}'.format(batch_start, batch_end))
   xs = xs[batch_start:batch_end]
+  fnames = np.arange(batch_start,batch_end)
+  print(fnames)
   
   print ('\n[Total data loaded: {0}]'.format(len(xs)))
 

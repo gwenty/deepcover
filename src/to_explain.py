@@ -111,8 +111,9 @@ def to_explain(eobj):
 
     ## to obtain the ranking for Input i
     selement=sbfl_elementt(x, 0, adv_xs, adv_ys, model, eobj.fnames[i], immunobert=eobj.immunobert)
-    dii=di+'/{0}'.format(str(datetime.now()).replace(' ', '-'))
-    dii=dii.replace(':', '-')
+    #dii=di+'/{0}'.format(str(datetime.now()).replace(' ', '-'))
+    #dii=dii.replace(':', '-')
+    dii = di+'/'+str(eobj.fnames[i])
     os.system('mkdir -p {0}'.format(dii))
     # Save the instance so we know which part is peptide, hla etc.
     if not os.path.isdir(dii):
