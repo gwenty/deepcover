@@ -69,7 +69,10 @@ def to_explain(eobj):
       ite+=1
 
       if eobj.immunobert:
-        passing, failing, indexes = spectra_gen_immunobert(eobj, x, y, mask_sizes=[1,2,3], substitution_matrix=sub_mat, testgen_size=eobj.testgen_size)
+        if eobj.dynamic:
+          passing, failing = spectra_gen_dynamic_immunobert(eobj, x, y, substitution_matrix=sub_mat, testgen_size=eobj.testgen_size)
+        else:
+          passing, failing, indexes = spectra_gen_immunobert(eobj, x, y, mask_sizes=[1,2,3], substitution_matrix=sub_mat, testgen_size=eobj.testgen_size)
       else:
         passing, failing=spectra_sym_gen(eobj, x, y, substitution_matrix=sub_mat, adv_value=eobj.adv_value, testgen_factor=eobj.testgen_factor, testgen_size=eobj.testgen_size)
       spectra=[]
@@ -128,8 +131,8 @@ def to_explain(eobj):
       np.savetxt(diii+'/ranking.txt', ranking_i, fmt='%s')
       save_spectrum(spectrum, diii+'/spectrum.txt')
 
-      #if eobj.immunobert:
-      #  immunobert_spectrum_plot(selement.x, spectrum, diii+'/'+measure+'.png')
+      if eobj.immunobert:
+       immunobert_spectrum_plot(selement.x, spectrum, diii+'/'+measure+'.png')
 
       if not eobj.immunobert:
 

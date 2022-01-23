@@ -65,6 +65,7 @@ def main():
   parser.add_argument("--path_to_immunobert", dest='immunobert_path', help="Path to ImmunoBERT folder", metavar="DIR")
   parser.add_argument("--batch_size", dest='batch_size', help="Batch size", metavar="INT", default=1)
   parser.add_argument("--batch_number", dest='batch_number', help="Batch number", metavar="INT", default=0)
+  parser.add_argument("--dynamic", dest='dynamic', help="Dynamic on mutation size.", action="store_true")
 
   args=parser.parse_args()
 
@@ -171,8 +172,9 @@ def main():
       measures.append(args.measure)
   else: measures = args.measures
   eobj.measures=measures
-  #eobj.batch_number=int(args.batch_number)
-  #eobj.batch_size=int(args.batch_size)
+  eobj.dynamic=args.dynamic
+
+  print('Dynamic: {}'.format(args.dynamic))
 
   if not args.wsol_file is None:
       print (args.wsol_file)

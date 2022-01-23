@@ -47,6 +47,7 @@ class explain_objectt:
     self.immunobert_path=None
     self.convert_example_to_batch=None
     self.move_dict_to_device=None
+    self.dynamic=None
   
   
   # I want to call the same prediction function regerdless of model

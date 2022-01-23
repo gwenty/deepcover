@@ -2,7 +2,7 @@ import numpy as np
 from utils import *
 from torch import tensor
 import copy
-from random import randint, choice, choices
+from random import randint, choice, choices, sample
 from itertools import combinations
 
 # This is where the mutations happen
@@ -153,7 +153,7 @@ def substitute_aa(region, sub_mat):
   #print(region)
   for aa in region:
     # Find a substitution for an AA
-    max_sub_value = blosum[aa].drop(aa).min() # Least similar NOTE!!!!!!!!!!!!!!!!!!!!!!
+    max_sub_value = blosum[aa].drop(aa).max() # Most similar
     # If there are mutliple maxs, randomly pick one to sub with
     sub_aa = choice(blosum[aa][blosum[aa]==max_sub_value].index.values)
     new_region.append(sub_aa)
@@ -213,13 +213,16 @@ def spectra_gen_immunobert(eobj, x, y, substitution_matrix, mask_sizes=[1,2,3], 
   # Mutate only peptide
   peptide, peptide_idx = get_regions(x, token_type_ids=regions_to_mask)
 
+  idx_to_mask = []
+
   for n_to_mutate in mask_sizes:
 
     # Get all index combinations of the specified sizes
     idx_to_mask = all_combos(peptide, n_to_mutate)
-    # Choose testgen_size of these
-    if testgen_size != -1 and len(idx_to_mask)>testgen_size:
-      idx_to_mask = choices(idx_to_mask, k=testgen_size)
+
+    #if n_to_mutate == 1:
+    #  for i in range(len(idx_to_mask)):
+    #    idx_to_mask[i] = [idx_to_mask[i]]
 
     # Mutate those peptide locations
     for region_index in idx_to_mask:
@@ -239,6 +242,13 @@ def spectra_gen_immunobert(eobj, x, y, substitution_matrix, mask_sizes=[1,2,3], 
       # Same as original - passing
       # Not same as original - failing
 
+  # Choose testgen_size of these
+  if testgen_size != -1 and len(inputs)>testgen_size:
+    print('Length inputs {}'.format(len(inputs)))
+    inputs = choices(inputs, k=testgen_size)
+  
+  print('Length of full mutation set: {}'.format(len(inputs)))
+
   new_ys = np.array([eobj.predict(inpu) for inpu in inputs])
   inputs = np.array(inputs)
   passing = inputs[new_ys == y]
@@ -247,3 +257,59 @@ def spectra_gen_immunobert(eobj, x, y, substitution_matrix, mask_sizes=[1,2,3], 
   #print(peptide_idx)
 
   return passing, failing, peptide_idx
+
+def spectra_gen_dynamic_immunobert(eobj, x, y, substitution_matrix, max_mask_size=0.33, regions_to_mask=[2, 0], testgen_size=2000):
+
+  passing = []
+  failing = []
+
+  mutation_size=1
+
+  # Mutate only peptide and mhc/whatever is specified in regions_to_mask
+  peptide, peptide_idx = get_regions(x, token_type_ids=regions_to_mask)
+
+  if max_mask_size<1:
+    max_mask_size=int(len(peptide)*max_mask_size)
+  print('Max mask size: {}'.format(max_mask_size))
+
+  while len(passing)+len(failing)<testgen_size:
+    
+    mutation_idx = sample(range(len(peptide)), mutation_size)
+
+    aa_region = peptide[[mutation_idx]]
+    if mutation_size == 1:
+      new_region = substitute_aa([aa_region], substitution_matrix)
+    else: 
+      new_region = substitute_aa(aa_region, substitution_matrix)
+
+    peptide_copy = copy.deepcopy(peptide)
+    peptide_copy[[mutation_idx]] = new_region
+    # Put new peptide back in the instance
+    t = copy.deepcopy(x)
+    t = insert_peptide(t, peptide_copy, peptide_idx)
+
+    new_y = eobj.predict(t)
+    
+    # Same as original - passing
+    # Not same as original - failing
+    if new_y==y:
+      passing.append(t)
+      # mutation_size = mutation_size + 1
+      # if mutation_size>max_mask_size:
+      #   mutation_size=max_mask_size
+    else:
+      failing.append(t)
+      # mutation_size = mutation_size - 1
+      # if mutation_size<1:
+      #   mutation_size=1
+    # Change mutation size depending on total passing and failing set sizes rather than the previous one. 
+    if len(passing) > len(failing):
+      mutation_size=mutation_size+1
+      if mutation_size>max_mask_size:
+         mutation_size=max_mask_size
+    elif len(passing) < len(failing):
+      mutation_size=mutation_size-1
+      if mutation_size<1:
+         mutation_size=1
+
+  return passing, failing
