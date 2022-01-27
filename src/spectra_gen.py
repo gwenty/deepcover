@@ -244,15 +244,16 @@ def spectra_gen_immunobert(eobj, x, y, substitution_matrix, mask_sizes=[1,2,3], 
 
   # Choose testgen_size of these
   if testgen_size != -1 and len(inputs)>testgen_size:
-    print('Length inputs {}'.format(len(inputs)))
+    print('Length of mutation set before chosing {}'.format(len(inputs)))
     inputs = choices(inputs, k=testgen_size)
   
-  print('Length of full mutation set: {}'.format(len(inputs)))
+  print('Length of mutation set: {}'.format(len(inputs)))
 
   new_ys = np.array([eobj.predict(inpu) for inpu in inputs])
   inputs = np.array(inputs)
   passing = inputs[new_ys == y]
   failing = inputs[new_ys != y]
+  print(new_ys)
 
   #print(peptide_idx)
 

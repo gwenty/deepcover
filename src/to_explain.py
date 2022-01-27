@@ -120,6 +120,8 @@ def to_explain(eobj):
         os.makedirs(dii)
     np.save(dii+'/instance', x)
 
+    save_stats(selement, dii, len(passing), len(failing))
+
     for measure in eobj.measures:
       print ('  #### [Measuring: {0} is used]'.format(measure))
       ranking_i, spectrum=to_rank(selement, measure)

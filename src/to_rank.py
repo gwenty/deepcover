@@ -40,7 +40,7 @@ def to_rank(sbfl_element, metric='zoltar'):
 
     ds_i1[ds_i1!=0]=1
     ds_i2[ds_i2!=0]=-1
-    ds_i2[ds_i2==0]=+1 # When difference is 0, it was not masked (or originally the same value = same effect as masking)
+    ds_i2[ds_i2==0]=+1 # When difference is 0, it was not masked (or originally the same value = same effect as not masking)
     ds_i2[ds_i2==-1]=0
 
     if is_adv: # predicted to not y
@@ -169,3 +169,73 @@ def to_rank(sbfl_element, metric='zoltar'):
   ind=np.argsort(spectrum, axis=None) # Low to high
 
   return ind, spectrum
+
+
+def save_stats(sbfl_element, dii, len_passing, len_failing):
+  if sbfl_element.immunobert:
+    # This will be an array of arrays
+    origin_data = sbfl_element.x[0] # Juust the input array
+    #print(origin_data)
+    sp=[1,origin_data.shape[0]] # It is 1D
+  else:
+    origin_data=sbfl_element.x
+    sp=origin_data.shape
+  ef=np.zeros(sp,dtype=float)
+  nf=np.zeros(sp,dtype=float)
+  ep=np.zeros(sp,dtype=float)
+  np_=np.zeros(sp,dtype=float)
+
+  xs=np.array(sbfl_element.xs)
+
+  # The difference between each generated mutant and the instance to be explained
+  if sbfl_element.immunobert:
+    diffs = copy.deepcopy(xs)
+    for i, x in enumerate(xs):
+      diffs[i][0] = x[0] - origin_data
+  else:
+    diffs=np.abs(xs-origin_data)
+  #diffs=diffs - (1+0.05 * origin_data)
+  #diffs[diffs>0]=0
+
+  for i in range(0, len(diffs)): # TODO: Not sure what happens here
+    is_adv=(sbfl_element.y!=sbfl_element.ys[i])
+    if sbfl_element.immunobert:
+      ds_i1 = np.array(copy.deepcopy(diffs[i])[0])
+      ds_i2=np.array(copy.deepcopy(diffs[i])[0])
+      
+    else:
+      ds_i1=diffs[i].copy()
+      ds_i2=diffs[i].copy()
+
+    ds_i1[ds_i1!=0]=1
+    ds_i2[ds_i2!=0]=-1
+    ds_i2[ds_i2==0]=+1 # When difference is 0, it was not masked (or originally the same value = same effect as not masking)
+    ds_i2[ds_i2==-1]=0
+
+    if is_adv: # predicted to not y
+      ef=ef+ds_i1 # masked
+      nf=nf+ds_i2 # not masked TODO: This makes no sense, I härled to the opposite as supposed to be by text.
+      #ef=ef+ds_i2
+      #nf=nf+ds_i1
+      #for index, _ in np.ndenumerate(diffs[i]):
+      #  flag=diffs[i][index]>0
+      #  if flag:
+      #    ef[index]+=1
+      #  else:
+      #    nf[index]+=1
+    else:
+      ep=ep+ds_i1
+      np_=np_+ds_i2
+      #ep=ep+ds_i2
+      #np_=np_+ds_i1
+      #for index, _ in np.ndenumerate(diffs[i]):
+      #  flag=diffs[i][index]>0
+      #  if flag:
+      #    ep[index]+=1
+      #  else:
+      #    np_[index]+=1
+
+  # Save some stats to look closer at decoys.
+  stats = {'len_passing': len_passing, 'len_failing': len_failing,
+        'ef':ef, 'nf':nf, 'ep':ep, 'np':np_}
+  np.save(dii+'/stats', stats)
