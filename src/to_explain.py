@@ -57,6 +57,7 @@ def to_explain(eobj):
 
   for i in range(0, len(eobj.inputs)):
     x=eobj.inputs[i]
+    print(repr(x))
     y = eobj.predict(x) # TODO: Change all predictions to this once settled on this solution.
 
     print ('\n[Input {2}: {0} / Output Label (to Explain): {1}]'.format(eobj.fnames[i], y, i))

@@ -238,4 +238,5 @@ def save_stats(sbfl_element, dii, len_passing, len_failing):
   # Save some stats to look closer at decoys.
   stats = {'len_passing': len_passing, 'len_failing': len_failing,
         'ef':ef, 'nf':nf, 'ep':ep, 'np':np_}
+  print(stats)
   np.save(dii+'/stats', stats)
