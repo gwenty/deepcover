@@ -51,12 +51,12 @@ class TestInstanceManipulations(unittest.TestCase):
 
     def test_get_regions(self):
         peptide = [23,  5, 15, 14, 25,  5, 22, 23, 21]
-        mhc = [23,  5, 16, 28, 21, 17, 17,
+        mhc = [28, 23,  5, 16, 28, 21, 17, 17,
               25,  5, 12, 13,  8, 25,  8, 23, 15, 28, 13, 16, 28, 20,  8, 28, 23,
-              26,  5, 25, 15,  5, 28, 23, 26, 12,  3]
+              26,  5, 25, 15,  5, 28, 23, 26, 12]
         print(get_regions(example_array)[0])
-        self.assertEqual(get_regions(example_array)[0], peptide)
-        self.assertEqual(get_regions(example_array)[0], peptide)
+        self.assertTrue((get_regions(example_array)[0]== np.array(peptide)).all())
+        self.assertTrue((get_regions(example_array, [2,0])[0] == np.array(peptide + mhc)).all())
 
     
 

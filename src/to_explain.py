@@ -50,6 +50,27 @@ def to_explain(eobj):
     #           1, 1, 1, 1, 1, 1]),
     #   'targets': tensor([1.])}
 
+    # example = np.array([np.array([ 2, 15, 21,  8, 21,  9, 13, 20, 15,  9, 13, 22, 11, 14,  9, 21,  3, 15,
+    #           9,  8, 15, 17, 10, 19,  9, 13,  3, 14, 21, 21, 14, 16,  5,  8, 21, 14,
+    #           8,  9,  8, 21, 14, 20,  3, 28, 12, 23, 14, 28, 21,  9, 13, 22, 23, 17,
+    #         23, 28,  9, 17, 13,  5, 28, 26, 21, 28, 17, 15, 28, 23, 26,  5,  9, 15,
+    #           5, 28, 15, 26, 28,  3]),
+    #   np.array([2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2,
+    #           2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0,
+    #           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    #           0, 0, 0, 0, 0, 0]),
+    #   np.array([  0,  15,  14,  13,  12,  11,  10,   9,   8,   7,   6,   5,   4,   3,
+    #             2,   1,   0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   0,   1,
+    #             2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,  14,  15,
+    #             0,   7,   9,  24,  45,  59,  62,  63,  66,  67,  69,  70,  73,  74,
+    #             76,  77,  80,  81,  84,  95,  97,  99, 114, 116, 118, 143, 147, 150,
+    #           152, 156, 158, 159, 163, 167, 171,   0]),
+    #   np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    #           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    #           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    #           0, 0, 0, 0, 0, 0]),
+    #   np.array([1.])])
+
     # eobj.inputs=[example]
 
     blosum_path = os.path.dirname(os.path.realpath(__file__)) + os.sep + '..' + os.sep + 'blosum.txt'
@@ -121,7 +142,7 @@ def to_explain(eobj):
         os.makedirs(dii)
     np.save(dii+'/instance', x)
 
-    save_stats(selement, dii, len(passing), len(failing))
+    #save_stats(selement, dii, len(passing), len(failing))
 
     for measure in eobj.measures:
       print ('  #### [Measuring: {0} is used]'.format(measure))
@@ -135,8 +156,8 @@ def to_explain(eobj):
       np.savetxt(diii+'/ranking.txt', ranking_i, fmt='%s')
       save_spectrum(spectrum, diii+'/spectrum.txt')
 
-      if eobj.immunobert:
-       immunobert_spectrum_plot(selement.x, spectrum, diii+'/'+measure+'.png')
+      #if eobj.immunobert:
+      # immunobert_spectrum_plot(selement.x, spectrum, diii+'/'+measure+'.png')
 
       if not eobj.immunobert:
 

@@ -253,9 +253,6 @@ def spectra_gen_immunobert(eobj, x, y, substitution_matrix, mask_sizes=[1,2,3], 
   inputs = np.array(inputs)
   passing = inputs[new_ys == y]
   failing = inputs[new_ys != y]
-  print(new_ys)
-
-  #print(peptide_idx)
 
   return passing, failing, peptide_idx
 

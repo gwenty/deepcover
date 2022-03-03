@@ -6,8 +6,6 @@ tarantula = []
 ochiai = []
 wong=[]
 zoltar=[]
-peptides=[]
-hlas=[]
 
 def add_spectrum(listj, filenames, dirpath):
     for file in filenames:
@@ -25,6 +23,11 @@ def get_positions(spectrum_path):
     return peptide_positions, mhc_positions
 
 def save_spectrum(dirName, resultPath):
+    tarantula = []
+    ochiai = []
+    wong=[]
+    zoltar=[]
+    print(f'Lengths of tarantula: {len(tarantula)}, ochiah: {len(ochiai)}, wong: {len(wong)}, zoltar: {len(zoltar)}')
     for (dirpath, dirnames, filenames) in os.walk(dirName): 
         if 'tarantula' in dirpath:
             add_spectrum(tarantula, filenames, dirpath)
@@ -34,6 +37,7 @@ def save_spectrum(dirName, resultPath):
             add_spectrum(wong, filenames, dirpath)
         if 'zoltar' in dirpath:
             add_spectrum(zoltar, filenames, dirpath)
+            
 
     np.save(os.path.join(resultPath, 'tarantula'), np.array(tarantula))
     np.save(os.path.join(resultPath, 'ochiai'), np.array(ochiai))
