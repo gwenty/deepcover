@@ -7,7 +7,6 @@ from datetime import datetime
 from mask import *
 from torch import sigmoid, tensor
 import os
-import platform
 
 def to_explain(eobj):
   print ('\n[To explain: SFL (Software Fault Localization) is used]')

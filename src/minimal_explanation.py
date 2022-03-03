@@ -10,7 +10,6 @@ import sys
 import argparse
 import os
 from utils import *
-from scipy.stats import rankdata
 from tqdm import tqdm
 
 
