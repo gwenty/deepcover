@@ -5,7 +5,7 @@ import copy
 def to_rank(sbfl_element, metric='zoltar'):
   if sbfl_element.immunobert:
     # This will be an array of arrays
-    origin_data = sbfl_element.x[0] # Juust the input array
+    origin_data = sbfl_element.x[0] # Just the input array
     #print(origin_data)
     sp=[1,origin_data.shape[0]] # It is 1D
   else:
@@ -238,5 +238,5 @@ def save_stats(sbfl_element, dii, len_passing, len_failing):
   # Save some stats to look closer at decoys.
   stats = {'len_passing': len_passing, 'len_failing': len_failing,
         'ef':ef, 'nf':nf, 'ep':ep, 'np':np_}
-  print(stats)
+  #print(stats)
   np.save(dii+'/stats', stats)

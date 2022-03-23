@@ -131,6 +131,7 @@ def to_explain(eobj):
       continue
 
     ## to obtain the ranking for Input i
+    # set y to 0 bacause in adv_ys, 0 if "passing" and -1 otherwise
     selement=sbfl_elementt(x, 0, adv_xs, adv_ys, model, eobj.fnames[i], immunobert=eobj.immunobert)
     #dii=di+'/{0}'.format(str(datetime.now()).replace(' ', '-'))
     #dii=dii.replace(':', '-')
@@ -146,7 +147,7 @@ def to_explain(eobj):
     for measure in eobj.measures:
       print ('  #### [Measuring: {0} is used]'.format(measure))
       ranking_i, spectrum=to_rank(selement, measure)
-      selement.y = y
+      #selement.y = y
       diii=dii+'/{0}'.format(measure)
       print ('  #### [Saving: {0}]'.format(diii))
       os.system('mkdir -p {0}'.format(diii))
